@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { ArrowLeft, Heart, MapPin, ShieldCheck } from "lucide-react";
 import { animals } from "@/data/animals";
 
@@ -10,11 +11,31 @@ export const metadata: Metadata = {
   title: "Conheça o animal",
 };
 
-export default async function AnimalDetailsPage({
-  params,
-}: {
+type AnimalDetailsPageProps = {
   params: Promise<{ id: string }>;
-}) {
+};
+
+function AnimalDetailsSkeleton() {
+  return (
+    <section className="min-h-screen py-12 md:py-16">
+      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+        <div className="h-5 w-48 animate-pulse rounded bg-[#e9f1e8]" />
+        <div className="mt-8 grid gap-10 lg:grid-cols-2">
+          <div className="min-h-[350px] animate-pulse rounded-3xl bg-[#e9f1e8] md:min-h-[540px]" />
+          <div className="space-y-5 py-3">
+            <div className="h-7 w-24 animate-pulse rounded-full bg-[#e9f1e8]" />
+            <div className="h-12 w-3/4 animate-pulse rounded bg-[#e9f1e8]" />
+            <div className="h-5 w-1/2 animate-pulse rounded bg-[#e9f1e8]" />
+            <div className="h-32 animate-pulse rounded-xl bg-[#e9f1e8]" />
+            <div className="h-40 animate-pulse rounded-2xl bg-[#e9f1e8]" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+async function AnimalDetails({ params }: AnimalDetailsPageProps) {
   const { id } = await params;
   const animal = animals.find((item) => item.id === id);
 
@@ -104,6 +125,7 @@ export default async function AnimalDetailsPage({
             >
               <Heart size={18} /> Tenho interesse em adotar
             </Link>
+
             <p className="mt-3 text-center text-xs text-[#929991]">
               Você precisará entrar na sua conta para iniciar uma solicitação.
             </p>
@@ -111,5 +133,15 @@ export default async function AnimalDetailsPage({
         </div>
       </div>
     </section>
+  );
+}
+
+export default function AnimalDetailsPage({
+  params,
+}: AnimalDetailsPageProps) {
+  return (
+    <Suspense fallback={<AnimalDetailsSkeleton />}>
+      <AnimalDetails params={params} />
+    </Suspense>
   );
 }
