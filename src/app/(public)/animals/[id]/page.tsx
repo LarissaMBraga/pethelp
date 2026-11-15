@@ -1,0 +1,115 @@
+
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, Heart, MapPin, ShieldCheck } from "lucide-react";
+import { animals } from "@/data/animals";
+
+export const metadata: Metadata = {
+  title: "Conheça o animal",
+};
+
+export default async function AnimalDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const animal = animals.find((item) => item.id === id);
+
+  if (!animal) {
+    notFound();
+  }
+
+  return (
+    <section className="min-h-screen py-12 md:py-16">
+      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+        <Link
+          href="/animals"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[#245c46]"
+        >
+          <ArrowLeft size={17} /> Voltar para os animais
+        </Link>
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-2">
+          <div className="relative min-h-[350px] overflow-hidden rounded-3xl bg-[#e9f1e8] md:min-h-[540px]">
+            <Image
+              src={animal.image}
+              alt={`Foto de ${animal.name}`}
+              fill
+              unoptimized
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="py-3">
+            <span className="rounded-full bg-[#e9f1e8] px-4 py-2 text-xs font-semibold text-[#245c46]">
+              {animal.species}
+            </span>
+
+            <h1 className="mt-6 text-4xl font-bold text-[#293b2f] md:text-5xl">
+              Conheça {animal.name}
+            </h1>
+
+            <p className="mt-3 text-sm text-[#858d85]">{animal.breed}</p>
+
+            <div className="mt-7 flex items-center gap-2 text-sm text-[#69736a]">
+              <MapPin size={17} />
+              {animal.location}
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              {[
+                ["Idade", animal.age],
+                ["Porte", animal.size],
+                ["Sexo", animal.gender],
+                ["Espécie", animal.species],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-xl border border-[#e7eae3] bg-white p-4"
+                >
+                  <p className="text-xs text-[#858d85]">{label}</p>
+                  <p className="mt-2 text-sm font-bold text-[#293b2f]">
+                    {value}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-9">
+              <h2 className="text-lg font-bold text-[#293b2f]">
+                Sobre {animal.name}
+              </h2>
+              <p className="mt-3 text-sm leading-8 text-[#737d73]">
+                {animal.description}
+              </p>
+            </div>
+
+            <div className="mt-8 rounded-2xl bg-[#edf4eb] p-5">
+              <div className="flex items-center gap-2 text-sm font-bold text-[#245c46]">
+                <ShieldCheck size={19} />
+                Sobre o responsável
+              </div>
+              <p className="mt-2 text-sm text-[#647568]">
+                {animal.responsible}
+              </p>
+            </div>
+
+            <Link
+              href="/login"
+              className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#245c46] px-7 py-4 text-sm font-bold text-white transition hover:bg-[#194532]"
+            >
+              <Heart size={18} /> Tenho interesse em adotar
+            </Link>
+            <p className="mt-3 text-center text-xs text-[#929991]">
+              Você precisará entrar na sua conta para iniciar uma solicitação.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
