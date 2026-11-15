@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   title: "Conheça o animal",
 };
 
+export function generateStaticParams() {
+  return animals.map((animal) => ({
+    id: animal.id,
+  }));
+}
+
 type AnimalDetailsPageProps = {
   params: Promise<{ id: string }>;
 };
@@ -50,7 +56,8 @@ async function AnimalDetails({ params }: AnimalDetailsPageProps) {
           href="/animals"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#245c46]"
         >
-          <ArrowLeft size={17} /> Voltar para os animais
+          <ArrowLeft size={17} />
+          Voltar para os animais
         </Link>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
@@ -123,7 +130,8 @@ async function AnimalDetails({ params }: AnimalDetailsPageProps) {
               href="/login"
               className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#245c46] px-7 py-4 text-sm font-bold text-white transition hover:bg-[#194532]"
             >
-              <Heart size={18} /> Tenho interesse em adotar
+              <Heart size={18} />
+              Tenho interesse em adotar
             </Link>
 
             <p className="mt-3 text-center text-xs text-[#929991]">
