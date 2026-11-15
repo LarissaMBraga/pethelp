@@ -9,12 +9,15 @@ export const metadata: Metadata = {
   title: "Encontrar animais",
 };
 
-type AnimalsPageProps = {
-  searchParams: Promise<{ q?: string }>;
-};
+async function AnimalsContent() {
+  const searchParams = await Promise.resolve(
+    (await import("next/navigation")).connection()
+  );
 
-async function AnimalsContent({ searchParams }: AnimalsPageProps) {
-  const { q = "" } = await searchParams;
+  const { q = "" } = await (async () => {
+    const { searchParams } = await import("next/navigation");
+    return searchParams;
+  })();
 
   const search = q.toLocaleLowerCase("pt-BR");
 
@@ -90,7 +93,7 @@ function AnimalsFallback() {
   );
 }
 
-export default function AnimalsPage({ searchParams }: AnimalsPageProps) {
+export default function AnimalsPage() {
   return (
     <section className="min-h-screen py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -108,7 +111,7 @@ export default function AnimalsPage({ searchParams }: AnimalsPageProps) {
         </div>
 
         <Suspense fallback={<AnimalsFallback />}>
-          <AnimalsContent searchParams={searchParams} />
+          <AnimalsContent />
         </Suspense>
       </div>
     </section>
